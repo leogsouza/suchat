@@ -197,3 +197,5 @@ const RegisterPage = (props) => {
       </Formik>
   )
 }
+
+export default RegisterPage;
