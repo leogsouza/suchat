@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from 'react'
+import { Route, Switch } from 'react-router-dom'
+import Footer from './components/Footer/Footer'
+import NavBar from './components/NavBar/NavBar'
+import LandingPage from './components/pages/LandingPage/LandingPage'
+import LoginPage from './components/pages/LoginPage/LoginPage'
+import RegisterPage from './components/pages/RegisterPage/RegisterPage'
+import Auth from './hoc/auth'
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Suspense fallback={(<div>Loading...</div>)}>
+      <NavBar />
+      <div style={{ paddingTop: '69px', minHeight: 'calc(100vh - 80px' }}>
+        <Switch>
+          <Route exact path="/" component={Auth(LandingPage, null)} />
+          <Route exact path="/login" component={Auth(LoginPage, false)} />
+          <Route exact path="/register" component={Auth(RegisterPage, false)} />
+        </Switch>
+      </div>
+      <Footer />
+    </Suspense>
+  )
 }
 
 export default App;
