@@ -1,16 +1,12 @@
-import React from 'react'
-import moment from 'moment'
+import { Button, Form, Input } from 'antd'
 import { Formik } from 'formik'
-import * as Yup from 'yup'
+import moment from 'moment'
+import React from 'react'
 import { useDispatch } from 'react-redux'
+import * as Yup from 'yup'
+import { registerUser } from '../../../actions/actionUser'
 
-import { registerUser } from '../../actions/actionUser'
 
-import {
-  Form,
-  Input,
-  Button,  
-} from 'antd'
 
 const formItemLayout = {
   labelCol: {
