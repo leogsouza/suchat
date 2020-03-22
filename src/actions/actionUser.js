@@ -1,12 +1,7 @@
 import axios from 'axios'
-import {
-  LOGIN_USER,
-  REGISTER_USER,
-  AUTH_USER,
-  LOGOUT_USER,
-} from '../constants/types'
+import { AUTH_USER, LOGIN_USER, LOGOUT_USER, REGISTER_USER } from '../constants/types'
 
-const apiURL = process.env.API_URL
+const apiURL = process.env.REACT_APP_API_URL
 
 export const registerUser = async (userData) => {
   const request = await axios.post(`${apiURL}/register`, userData)

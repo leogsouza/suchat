@@ -1,16 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
 import { Menu } from 'antd'
 import axios from 'axios'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { useSelector } from 'react-redux'
 
 const RightMenu = (props) => {
   const user = useSelector(state => state.user)
 
   const logoutHandler = async () => {
-    const apiURL = process.env.API_URL
+    const apiURL = process.env.REACT_APP_API_URL
+    console.log('apiURL', apiURL)
     const response = await axios.get(`${apiURL}/logout`)
     if (response.status === 200) {
       props.history.push('/login')
@@ -18,6 +19,7 @@ const RightMenu = (props) => {
       alert('Log Out Failed')
     }
   }
+  console.log('user', user);
   if (user.userData && !user.userData.isAuth) {
     return (
       <Menu mode={props.mode}>

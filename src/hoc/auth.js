@@ -10,7 +10,8 @@ export default (ComponentClass, reload, adminRoute = null) => {
     let user = useSelector(state => state.user)
     const dispatch = useDispatch()
 
-    useEffect(async () => {
+    useEffect(() => {
+      async function fetchData() {
       const response = await dispatch(auth())
       if (!response.payload.isAuth) {
         if (reload) {
@@ -25,6 +26,8 @@ export default (ComponentClass, reload, adminRoute = null) => {
           }
         }
       }
+    }
+    fetchData()
     }, [])
     return (
       <ComponentClass {...props} user={user} />
