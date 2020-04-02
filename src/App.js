@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import Footer from './components/Footer/Footer'
-import NavBar from './components/NavBar/NavBar'
+import Navbar from './components/Navbar/Navbar'
 import LandingPage from './components/pages/LandingPage/LandingPage'
 import LoginPage from './components/pages/LoginPage/LoginPage'
 import RegisterPage from './components/pages/RegisterPage/RegisterPage'
@@ -11,7 +11,7 @@ import Auth from './hoc/auth'
 function App() {
   return (
     <Suspense fallback={(<div>Loading...</div>)}>
-      <NavBar />
+      <Navbar />
       <div style={{ paddingTop: '69px', minHeight: 'calc(100vh - 80px' }}>
         <Switch>
           <Route exact path="/" component={Auth(LandingPage, null)} />
