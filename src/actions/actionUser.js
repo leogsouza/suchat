@@ -17,7 +17,7 @@ export const loginUser = async (loginData)  => {
 
   return {
     type: LOGIN_USER,
-    payload: request
+    payload: request.data
   }
 }
 
