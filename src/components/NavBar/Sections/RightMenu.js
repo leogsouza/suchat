@@ -9,18 +9,27 @@ import { withRouter } from 'react-router-dom'
 const RightMenu = (props) => {
   const user = useSelector(state => state.user)
 
+
   const logoutHandler = async () => {
     const apiURL = process.env.REACT_APP_API_URL
-    console.log('apiURL', apiURL)
-    const response = await axios.get(`${apiURL}/logout`)
+    
+    let config = {};
+    if (localStorage.getItem("userInfo") != null) {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      config = {headers: {Authorization: 'Bearer ' +userInfo.token }}
+    }
+
+    const response = await axios.get(`${apiURL}/logout`, config)
     if (response.status === 200) {
+      window.localStorage.removeItem("userInfo");
+      window.localStorage.removeItem("userId");
       props.history.push('/login')
     } else {
       alert('Log Out Failed')
     }
   }
   console.log('user', user);
-  if (user.userData && !user.userData.isAuth) {
+  if (user && user.userData &&  user.userData.data && !user.userData.data.isAuth) {
     return (
       <Menu mode={props.mode}>
         <Menu.Item key="mail">

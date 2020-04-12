@@ -47,6 +47,7 @@ const LoginPage = (props) => {
             const response = await dispatch(loginUser(dataToSubmit))
             if (response.payload.loginSuccess) {
               window.localStorage.setItem('userId', (await response).payload.userId)
+              window.localStorage.setItem("userInfo", JSON.stringify(response.payload));
               if (rememberMe === true) {
                 window.localStorage.setItem('rememberMe', values.id)
               } else {
@@ -62,6 +63,7 @@ const LoginPage = (props) => {
               setFormErrorMessage('')
             }, 300)
           }
+          setSubmitting(false)
         }, 500)
       }}
     >

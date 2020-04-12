@@ -1,7 +1,9 @@
-import axios from 'axios'
-import { AUTH_USER, LOGIN_USER, LOGOUT_USER, REGISTER_USER } from '../constants/types'
+import axios from 'axios';
+import { AUTH_USER, LOGIN_USER, LOGOUT_USER, REGISTER_USER } from '../constants/types';
 
 const apiURL = process.env.REACT_APP_API_URL
+
+
 
 export const registerUser = async (userData) => {
   const request = await axios.post(`${apiURL}/register`, userData)
@@ -22,8 +24,14 @@ export const loginUser = async (loginData)  => {
 }
 
 
-export const auth = async ()  => {
-  const request = await axios.get(`${apiURL}/auth`)
+export const auth = async ()  => {  
+  let config = {};
+  if (localStorage.getItem("userInfo") != null) {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    config = {headers: {Authorization: 'Bearer ' +userInfo.token }}
+  }
+
+  const request = await axios.get(`${apiURL}/auth`,config)
 
   return {
     type: AUTH_USER,
@@ -31,7 +39,7 @@ export const auth = async ()  => {
   }
 }
 
-export const logoutUser = async (loginData)  => {
+export const logoutUser = async (loginData)  => {  
   const request = await axios.get(`${apiURL}/logout`)
 
   return {
