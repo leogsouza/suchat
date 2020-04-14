@@ -5,6 +5,7 @@ import io from 'socket.io-client'
 import * as moment from 'moment'
 
 const apiURL = process.env.REACT_APP_API_URL
+const socket = io.connect('ws://localhost:9999', { transports: ['websocket'] })
 
 const ChatPage = (props) => {
 
@@ -12,11 +13,12 @@ const ChatPage = (props) => {
   let messagesEnd = null;
 
   const [chatMessage, setChatMessage] = useState("")
-  let [socket, setSocket] = useState(null)
 
   useEffect(() => {  
-    setSocket(io.connect('ws://localhost:9999', { transports: ['websocket'] }))    
     
+    socket.on('output_message', payload => {
+      console.log('payload received', payload)
+    })
   }, [])
 
   const handleChatMessage = evt=> {
@@ -29,24 +31,26 @@ const ChatPage = (props) => {
     let userId = props.user.userData.data.id
     let username = props.user.userData.data.name
     let userImage = props.user.userData.data.avatarUrl
-    let nowTime = moment()
+    let nowTime = moment().toISOString()
     let type = 'Image'
+    const body = {
+      userId: userId,
+      username: username,
+      userImage: userImage,
+      nowTime: nowTime,
+      message: chatMessage,
+      type: type
+    }
     
-    socket.emit('chat', {text: chatMessage,
-      body: {
-        "userId": userId,
-        "username": username,
-        userImage: userImage,
-        nowTime: nowTime,
-        type: type
-      }
-    }, function(response) {
+    socket.emit('input_message', body, function(response) {
       console.log(response)
     })
     
     setChatMessage("")
     
   }
+
+
 
     return (
       <React.Fragment>
