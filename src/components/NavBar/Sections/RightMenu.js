@@ -5,13 +5,14 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import { USER_SERVER } from '../../../config'
+
 
 const RightMenu = (props) => {
   const user = useSelector(state => state.user)
 
 
   const logoutHandler = async () => {
-    const apiURL = process.env.REACT_APP_API_URL
     
     let config = {};
     if (localStorage.getItem("userInfo") != null) {
@@ -19,7 +20,7 @@ const RightMenu = (props) => {
       config = {headers: {Authorization: 'Bearer ' +userInfo.token }}
     }
 
-    const response = await axios.get(`${apiURL}/logout`, config)
+    const response = await axios.get(`${USER_SERVER}/logout`, config)
     if (response.status === 200) {
       window.localStorage.removeItem("userInfo");
       window.localStorage.removeItem("userId");

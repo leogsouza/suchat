@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { AUTH_USER, LOGIN_USER, LOGOUT_USER, REGISTER_USER } from '../constants/types';
-
-const apiURL = process.env.REACT_APP_API_URL
-
-
+import { USER_SERVER } from '../config'
 
 export const registerUser = async (userData) => {
-  const request = await axios.post(`${apiURL}/register`, userData)
+  const request = await axios.post(`${USER_SERVER}/register`, userData)
 
   return {
     type: REGISTER_USER,
@@ -15,7 +12,7 @@ export const registerUser = async (userData) => {
 }
 
 export const loginUser = async (loginData)  => {
-  const request = await axios.post(`${apiURL}/login`, loginData)
+  const request = await axios.post(`${USER_SERVER}/login`, loginData)
 
   return {
     type: LOGIN_USER,
@@ -31,7 +28,7 @@ export const auth = async ()  => {
     config = {headers: {Authorization: 'Bearer ' +userInfo.token }}
   }
 
-  const request = await axios.get(`${apiURL}/auth`,config)
+  const request = await axios.get(`${USER_SERVER}/auth`,config)
 
   return {
     type: AUTH_USER,
@@ -40,7 +37,7 @@ export const auth = async ()  => {
 }
 
 export const logoutUser = async (loginData)  => {  
-  const request = await axios.get(`${apiURL}/logout`)
+  const request = await axios.get(`${USER_SERVER}/logout`)
 
   return {
     type: LOGOUT_USER,

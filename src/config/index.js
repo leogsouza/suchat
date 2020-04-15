@@ -1,0 +1,1 @@
+export const USER_SERVER = `${process.env.REACT_APP_API_URL}/api/users`;
