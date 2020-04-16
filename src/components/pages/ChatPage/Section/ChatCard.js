@@ -17,8 +17,8 @@ const ChatCard = (props) => (
         </p>
       }
       datetime={
-        <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-          <span>{moment().fromNow()}</span>
+        <Tooltip title={moment(props.created_at).format('YYYY-MM-DD HH:mm:ss')}>
+          <span>{moment(props.created_at).fromNow()}</span>
         </Tooltip>}
     />
   </div>

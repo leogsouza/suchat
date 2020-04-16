@@ -11,7 +11,6 @@ import { USER_SERVER } from '../../../config'
 const RightMenu = (props) => {
   const user = useSelector(state => state.user)
 
-
   const logoutHandler = async () => {
     
     let config = {};
@@ -29,7 +28,7 @@ const RightMenu = (props) => {
       alert('Log Out Failed')
     }
   }
-  console.log('user', user);
+  
   if (user && user.userData &&  user.userData.data && !user.userData.data.isAuth) {
     return (
       <Menu mode={props.mode}>

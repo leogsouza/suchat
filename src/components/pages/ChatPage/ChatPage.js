@@ -1,33 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 import { Form, Icon, Input, Button, Row, Col } from 'antd'
+import { withRouter } from 'react-router-dom'
 import io from 'socket.io-client'
 import * as moment from 'moment'
 
-import { getChats } from '../../../actions/actionChat'
+import { getChats, afterPostMessage } from '../../../actions/actionChat'
 import ChatCard from './Section/ChatCard'
 
-const apiURL = process.env.REACT_APP_API_URL
 const socket = io.connect('ws://localhost:9999', { transports: ['websocket'] })
 
 
 const ChatPage = (props) => {
 
   const dispatch = useDispatch()
-  const user = useSelector(state => state.user)
   let messagesEnd = null;
-  const [chats, setChats] = useState([])
+  const chats = useSelector(state => state.chat.chats)  
   const [chatMessage, setChatMessage] = useState("")
 
   useEffect( () => {  
     // use IIFE to call async getChats on useEffect 
     (async () => {
-      setChats((await dispatch(getChats())).payload.data)
+      await dispatch(getChats())
     })()
     
-    socket.on('output_message', payload => {
-      console.log('payload received', payload)
+  }, [])
+
+  useEffect(() => {
+    socket.on('output_message', messageFromBackend => {
+      
+      dispatch(afterPostMessage(messageFromBackend))
     })
   }, [])
 
@@ -52,7 +54,7 @@ const ChatPage = (props) => {
     let username = props.user.userData.data.name
     let userImage = props.user.userData.data.avatarUrl
     let nowTime = moment().toISOString()
-    let type = 'Image'
+    let type = 'Text'
     const body = {
       userId: userId,
       username: username,
@@ -62,15 +64,11 @@ const ChatPage = (props) => {
       type: type
     }
     
-    socket.emit('input_message', body, function(response) {
-      console.log(response)
-    })
+    socket.emit('input_message', body)
     
     setChatMessage("")
     
-  }
-
-
+  }  
 
     return (
       <React.Fragment>
@@ -114,4 +112,4 @@ const ChatPage = (props) => {
   }
 
 
-export default ChatPage
+export default withRouter(ChatPage)
