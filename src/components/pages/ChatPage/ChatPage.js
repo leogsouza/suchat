@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useRef,useEffect, useState } from 'react'
 import { useSelector,useDispatch } from 'react-redux'
 import { Form, Icon, Input, Button, Row, Col } from 'antd'
 import { withRouter } from 'react-router-dom'
@@ -14,7 +14,7 @@ const socket = io.connect('ws://localhost:9999', { transports: ['websocket'] })
 const ChatPage = (props) => {
 
   const dispatch = useDispatch()
-  let messagesEnd = null;
+  let messagesEnd = useRef(null);
   const chats = useSelector(state => state.chat.chats)  
   const [chatMessage, setChatMessage] = useState("")
 
@@ -22,6 +22,7 @@ const ChatPage = (props) => {
     // use IIFE to call async getChats on useEffect 
     (async () => {
       await dispatch(getChats())
+      messagesEnd.current.scrollIntoView({behaviour: 'smooth'})
     })()
     
   }, [])
@@ -30,6 +31,7 @@ const ChatPage = (props) => {
     socket.on('output_message', messageFromBackend => {
       
       dispatch(afterPostMessage(messageFromBackend))
+      messagesEnd.current.scrollIntoView({behaviour: 'smooth'})
     })
   }, [])
 
@@ -77,11 +79,11 @@ const ChatPage = (props) => {
         </div>
 
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div id="cards" className="infinite-container">
+          <div className="infinite-container" style={{height: '500px', overflowY: 'scroll'}}>
             {chats && (
               <div>{renderCards()}</div>
               )}
-              <div ref={el => (messagesEnd = el)} style={{ float: "left", clear: "both"}} />
+              <div ref={messagesEnd} style={{ float: "left", clear: "both"}} />
           </div>
 
           <Row>
