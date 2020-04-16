@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Form, Icon, Input, Button, Row, Col } from 'antd'
 import io from 'socket.io-client'
 import * as moment from 'moment'
 
+import { getChats } from '../../../actions/actionChat'
+import ChatCard from './Section/ChatCard'
+
 const apiURL = process.env.REACT_APP_API_URL
 const socket = io.connect('ws://localhost:9999', { transports: ['websocket'] })
 
+
 const ChatPage = (props) => {
 
+  const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   let messagesEnd = null;
-
+  const [chats, setChats] = useState([])
   const [chatMessage, setChatMessage] = useState("")
 
-  useEffect(() => {  
+  useEffect( () => {  
+    // use IIFE to call async getChats on useEffect 
+    (async () => {
+      setChats((await dispatch(getChats())).payload.data)
+    })()
     
     socket.on('output_message', payload => {
       console.log('payload received', payload)
     })
   }, [])
+
+  const renderCards = () => (
+     chats && chats.map(chat => (
+      <ChatCard 
+        key={chat.id}
+        {...chat}
+        user={chat.sender}
+      />
+    )))
+  
 
   const handleChatMessage = evt=> {
     setChatMessage(evt.target.value)
@@ -59,12 +79,11 @@ const ChatPage = (props) => {
         </div>
 
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div className="infinite-container">
-            {/* {this.props.chats && (
-              <div>{this.renderCards()}</div>
-              )}*/ }
-              <div ref={el => (messagesEnd = el)}
-                style={{ float: "left", clear: "both"}} />
+          <div id="cards" className="infinite-container">
+            {chats && (
+              <div>{renderCards()}</div>
+              )}
+              <div ref={el => (messagesEnd = el)} style={{ float: "left", clear: "both"}} />
           </div>
 
           <Row>
