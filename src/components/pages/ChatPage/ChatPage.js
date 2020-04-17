@@ -4,9 +4,12 @@ import { Form, Icon, Input, Button, Row, Col } from 'antd'
 import { withRouter } from 'react-router-dom'
 import io from 'socket.io-client'
 import * as moment from 'moment'
+import Dropzone from 'react-dropzone'
+import axios from 'axios'
 
 import { getChats, afterPostMessage } from '../../../actions/actionChat'
 import ChatCard from './Section/ChatCard'
+import { CHAT_SERVER } from '../../../config'
 
 const socket = io.connect('ws://localhost:9999', { transports: ['websocket'] })
 
@@ -49,6 +52,36 @@ const ChatPage = (props) => {
     setChatMessage(evt.target.value)
   }
 
+  const onDropHandle = async (files) => {
+    
+    let formData = new FormData
+
+    const config = {
+      header: {'content-type': 'multipart/form-data'}
+    }
+
+    formData.append('file', files[0])
+
+    const response = await axios.post(`${CHAT_SERVER}/upload`, formData, config)
+    
+    if (response.data.success) {
+      let userId = props.user.userData.data.id
+      let username = props.user.userData.data.name
+      let userImage = props.user.userData.data.avatarUrl
+      let nowTime = moment().toISOString()
+      let type = 'VideoOrImage'
+      
+      socket.emit('input_message', {
+        userId: userId,
+        username: username,
+        userImage: userImage,
+        nowTime: nowTime,
+        message: response.data.url,
+        type: type
+      })
+    }
+  }
+
   const submitChatMessage = evt => {
     evt.preventDefault()
     
@@ -57,16 +90,16 @@ const ChatPage = (props) => {
     let userImage = props.user.userData.data.avatarUrl
     let nowTime = moment().toISOString()
     let type = 'Text'
-    const body = {
+    
+    
+    socket.emit('input_message', {
       userId: userId,
       username: username,
       userImage: userImage,
       nowTime: nowTime,
       message: chatMessage,
       type: type
-    }
-    
-    socket.emit('input_message', body)
+    })
     
     setChatMessage("")
     
@@ -99,7 +132,18 @@ const ChatPage = (props) => {
                 />
               </Col>
               <Col span={2}>
-
+                <Dropzone onDrop={onDropHandle}>
+                  {({getRootProps, getInputProps}) => (
+                    <section>
+                      <div {...getRootProps()}>
+                        <input {...getInputProps()} />
+                        <Button>
+                          <Icon type='upload'/>
+                        </Button>
+                      </div>
+                    </section>
+                  )}
+                </Dropzone>
               </Col>
               <Col span={4}>
                 <Button type="primary" style={{ width: '100%'}} onClick={submitChatMessage} htmlType="submit">

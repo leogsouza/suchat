@@ -2,6 +2,8 @@ import React from 'react'
 import {Comment, Tooltip, Avatar} from 'antd'
 import * as moment from 'moment'
 
+import Message from './Message'
+
 const ChatCard = (props) => (
   <div>
     <Comment
@@ -12,9 +14,7 @@ const ChatCard = (props) => (
         />
       }
       content={
-        <p>
-          {props.message}
-        </p>
+        <Message {...props} />
       }
       datetime={
         <Tooltip title={moment(props.created_at).format('YYYY-MM-DD HH:mm:ss')}>
