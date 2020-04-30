@@ -9,9 +9,9 @@ import axios from 'axios'
 
 import { getChats, afterPostMessage } from '../../../actions/actionChat'
 import ChatCard from './Section/ChatCard'
-import { CHAT_SERVER } from '../../../config'
+import { CHAT_SERVER, CHAT_WS_SERVER } from '../../../config'
 
-const socket = io.connect('ws://localhost:9999', { transports: ['websocket'] })
+const socket = io.connect(CHAT_WS_SERVER, { transports: ['websocket'] })
 
 
 const ChatPage = (props) => {
